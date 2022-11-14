@@ -1,8 +1,10 @@
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
+using SharedLibrary;
 
 Console.Title = "Server";
+List<ClientWebSocketHandler> clientHandlers = new List<ClientWebSocketHandler>();
 var builder = WebApplication.CreateBuilder();
 builder.WebHost.UseUrls("http://localhost:6666");
 var app = builder.Build();
@@ -13,10 +15,10 @@ app.Map("/ws", async context =>
     {
         using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
         {
+            clientHandlers.Add(new ClientWebSocketHandler(webSocket));
             while (true)
             {
-                await webSocket.SendAsync(Encoding.ASCII.GetBytes($"Test - {DateTime.Now}"), WebSocketMessageType.Text, true, CancellationToken.None);
-                await Task.Delay(1000);
+                
             }
         }
     }
